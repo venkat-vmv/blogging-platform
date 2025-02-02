@@ -1,12 +1,13 @@
 package com.example.blog.service;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.example.blog.entity.Comment;
 import com.example.blog.entity.Post;
 import com.example.blog.repository.CommentRepository;
 import com.example.blog.repository.PostRepository;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class BlogService {
@@ -27,7 +28,9 @@ public class BlogService {
     }
 
     public void deletePost(Long id) {
-        postRepository.deleteById(id);
+        Post post = postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
+        post.getComments().clear();
+        postRepository.delete(post);
     }
 
     public Comment addComment(Long postId, Comment comment) {
